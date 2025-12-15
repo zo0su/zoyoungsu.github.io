@@ -2,25 +2,26 @@ import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, where, getDoc, doc, setDoc, updateDoc, increment } from 'firebase/firestore'
 
 // Firebase 설정
-// 실제 Firebase 설정을 사용하려면:
-// 1. Firebase 콘솔(https://console.firebase.google.com)에서 프로젝트 선택
-// 2. 프로젝트 설정 > 일반 탭에서 웹 앱 추가
-// 3. firebaseConfig 객체의 값들을 복사하여 아래에 붙여넣기
-// 4. Firestore 데이터베이스 생성 (테스트 모드로 시작 가능)
-// 5. Firestore 인덱스 생성: users 컬렉션에 bestScore 필드에 대한 인덱스 필요
+// 환경 변수를 사용하여 API 키를 안전하게 관리합니다
+// .env 파일에 실제 Firebase 설정 값을 입력하세요
+// 자세한 설정 방법은 ENV_SETUP_GUIDE.md를 참조하세요
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA_uaPzLGpSWLYBsh7WoM41srYVZq0_ao4",
-    authDomain: "btogame-zo0su.firebaseapp.com",
-    projectId: "btogame-zo0su",
-    storageBucket: "btogame-zo0su.firebasestorage.app",
-    messagingSenderId: "677275281428",
-    appId: "1:677275281428:web:757b639124cc3f974a1f01",
-    measurementId: "G-TW2DYNNGKW"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 }
 
 // Firebase가 설정되지 않은 경우를 위한 플래그
-export const isFirebaseConfigured = firebaseConfig.apiKey !== "AIzaSyDummyKeyReplaceWithReal"
+export const isFirebaseConfigured = !!(
+  firebaseConfig.apiKey && 
+  firebaseConfig.apiKey !== "your_api_key_here" &&
+  firebaseConfig.apiKey !== "AIzaSyDummyKeyReplaceWithReal"
+)
 
 // Firebase 초기화
 const app = initializeApp(firebaseConfig)
@@ -131,4 +132,3 @@ export async function getTopRankings(limitCount = 10) {
     return []
   }
 }
-
