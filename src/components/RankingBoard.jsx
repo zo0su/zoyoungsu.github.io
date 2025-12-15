@@ -58,4 +58,3 @@ function RankingBoard({ onBack }) {
 }
 
 export default RankingBoard
-
