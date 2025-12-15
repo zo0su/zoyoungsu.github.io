@@ -55,4 +55,3 @@ export function getDifficultyMultiplier(elapsedTime) {
   const intervals = Math.floor(elapsedTime / 30)
   return 1 + (intervals * 0.1)
 }
-
