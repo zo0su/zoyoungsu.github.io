@@ -14,4 +14,3 @@ function StartScreen({ onStart }) {
 }
 
 export default StartScreen
-
