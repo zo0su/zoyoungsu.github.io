@@ -55,4 +55,3 @@ function ResultScreen({ result, profile, onPlayAgain, onViewRanking }) {
 }
 
 export default ResultScreen
-
