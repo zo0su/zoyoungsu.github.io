@@ -321,3 +321,4 @@ function Game({ profile, onGameEnd }) {
 }
 
 export default Game
+
