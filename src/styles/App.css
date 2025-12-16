@@ -50,6 +50,9 @@ body {
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 10;
+  position: relative;
+  pointer-events: auto;
 }
 
 .start-button:hover {
@@ -282,3 +285,4 @@ body {
     flex-direction: column;
   }
 }
+
