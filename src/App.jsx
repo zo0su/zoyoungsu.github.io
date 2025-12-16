@@ -12,6 +12,7 @@ function App() {
   const [gameResult, setGameResult] = useState(null)
 
   const handleStart = () => {
+    console.log('handleStart 호출됨, 화면을 profile로 변경')
     setScreen('profile')
   }
 
