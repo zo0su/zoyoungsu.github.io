@@ -2,15 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { ITEMS, getRandomItem, checkCollision, getDifficultyMultiplier } from '../utils/gameLogic'
 import './Game.css'
 
-const GAME_DURATION = 300 // 5분 = 300초
-const INITIAL_LIVES = 3
+const GAME_DURATION = 60 // 1분 = 60초
 const ITEM_SPAWN_INTERVAL = 1000 // 1초마다 아이템 생성
 const BASE_FALL_SPEED = 2
 
 function Game({ profile, onGameEnd }) {
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION)
   const [score, setScore] = useState(0)
-  const [lives, setLives] = useState(INITIAL_LIVES)
   const [items, setItems] = useState([])
   const [basketPosition, setBasketPosition] = useState(50) // 백분율
   const [gameStarted, setGameStarted] = useState(false)
@@ -22,7 +20,6 @@ function Game({ profile, onGameEnd }) {
   const animationFrameRef = useRef(null)
   const lastSpawnTimeRef = useRef(0)
   const touchStartXRef = useRef(0)
-  const missedItemsRef = useRef(new Set()) // 놓친 아이템 추적
 
   // handleGameEnd를 먼저 정의 (useEffect에서 사용하기 전에)
   const handleGameEnd = useCallback(() => {
@@ -34,10 +31,9 @@ function Game({ profile, onGameEnd }) {
     }
     onGameEnd({
       score,
-      timeLeft,
-      lives
+      timeLeft
     })
-  }, [score, timeLeft, lives, onGameEnd])
+  }, [score, timeLeft, onGameEnd])
 
   // 게임 시작
   useEffect(() => {
@@ -65,11 +61,14 @@ function Game({ profile, onGameEnd }) {
         const newItem = getRandomItem()
         const gameArea = gameAreaRef.current
         if (gameArea) {
-          const maxX = gameArea.offsetWidth - 60 // 아이템 너비 고려
+          // 벽돌은 크기를 2배로 설정
+          const isBrick = newItem.isObstacle
+          const itemSize = isBrick ? 120 : 60
+          const maxX = gameArea.offsetWidth - itemSize
           newItem.x = Math.random() * maxX
-          newItem.y = -60
-          newItem.width = 60
-          newItem.height = 60
+          newItem.y = isBrick ? -120 : -60
+          newItem.width = itemSize
+          newItem.height = itemSize
           setItems((prev) => [...prev, newItem])
         }
         lastSpawnTimeRef.current = currentTime
@@ -122,9 +121,9 @@ function Game({ profile, onGameEnd }) {
             }
 
             if (checkCollision(itemRect, basketRect)) {
-              // 점수 획득
+              // 점수 변경 (양수: 획득, 음수: 감점)
               const newScore = item.score
-              setScore((prev) => prev + newScore)
+              setScore((prev) => Math.max(0, prev + newScore)) // 점수는 0 이하로 내려가지 않음
               
               // 점수 팝업 추가
               setScorePopups((prev) => [
@@ -142,19 +141,7 @@ function Game({ profile, onGameEnd }) {
 
             // 화면 밖으로 나간 경우
             if (newY > gameArea.offsetHeight) {
-              // 놓친 아이템이 아직 처리되지 않은 경우에만 목숨 감소
-              if (!missedItemsRef.current.has(item.id)) {
-                missedItemsRef.current.add(item.id)
-                setLives((prev) => {
-                  const newLives = prev - 1
-                  if (newLives <= 0) {
-                    handleGameEnd()
-                    return 0
-                  }
-                  return newLives
-                })
-              }
-              return null // 아이템 제거
+              return null // 아이템 제거 (목숨 시스템 제거됨)
             }
 
             return { ...item, y: newY }
@@ -218,12 +205,10 @@ function Game({ profile, onGameEnd }) {
     setIsPaused(false)
     setTimeLeft(GAME_DURATION)
     setScore(0)
-    setLives(INITIAL_LIVES)
     setItems([])
     setBasketPosition(50)
     setScorePopups([])
     lastSpawnTimeRef.current = 0
-    missedItemsRef.current.clear()
   }
   
   // 점수 팝업 애니메이션
@@ -258,10 +243,6 @@ function Game({ profile, onGameEnd }) {
             <span>🏆 점수:</span>
             <span className="stat-value">{score}</span>
           </div>
-          <div className="stat">
-            <span>❤️ 목숨:</span>
-            <span className="stat-value">{lives}</span>
-          </div>
         </div>
       </div>
 
@@ -285,7 +266,7 @@ function Game({ profile, onGameEnd }) {
           {items.map((item) => (
             <div
               key={item.id}
-              className="game-item"
+              className={`game-item ${item.isObstacle ? 'obstacle-item' : ''}`}
               style={{
                 left: `${item.x}px`,
                 top: `${item.y}px`,
@@ -299,13 +280,13 @@ function Game({ profile, onGameEnd }) {
           {scorePopups.map((popup) => (
             <div
               key={popup.id}
-              className="score-popup"
+              className={`score-popup ${popup.score < 0 ? 'score-negative' : ''}`}
               style={{
                 left: `${popup.x}px`,
                 top: `${popup.y}px`
               }}
             >
-              +{popup.score}
+              {popup.score > 0 ? '+' : ''}{popup.score}
             </div>
           ))}
           <div
