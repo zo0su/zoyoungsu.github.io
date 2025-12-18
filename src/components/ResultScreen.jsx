@@ -31,7 +31,6 @@ function ResultScreen({ result, profile, onPlayAgain, onViewRanking }) {
       <div className="score-display">{result?.score || 0}점</div>
       <div style={{ marginTop: '20px', color: '#666' }}>
         <p>남은 시간: {Math.floor((result?.timeLeft || 0) / 60)}분 {result?.timeLeft % 60}초</p>
-        <p>남은 목숨: {result?.lives || 0}개</p>
         {userBest && (
           <div style={{ marginTop: '15px', padding: '15px', background: '#f5f5f5', borderRadius: '10px' }}>
             <p style={{ fontWeight: 'bold', marginBottom: '5px' }}>내 최고 기록</p>
