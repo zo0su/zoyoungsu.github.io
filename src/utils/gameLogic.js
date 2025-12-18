@@ -7,7 +7,8 @@ export const ITEMS = [
   { emoji: '🎷', name: '클라리넷', score: 10, speed: 1, probability: 12 },
   { emoji: '🥁', name: '팀파니', score: 10, speed: 1, probability: 10 },
   { emoji: '🪄', name: '지휘봉', score: 10, speed: 1, probability: 11 },
-  { emoji: '🍙', name: '김밥', score: 20, speed: 1.5, probability: 10 }
+  { emoji: '🍙', name: '김밥', score: 20, speed: 1.5, probability: 10 },
+  { emoji: '🧱', name: '벽돌', score: -20, speed: 1, probability: 8, isObstacle: true } // 벽돌: 감점 아이템
 ]
 
 // 확률 기반 아이템 선택
@@ -55,3 +56,4 @@ export function getDifficultyMultiplier(elapsedTime) {
   const intervals = Math.floor(elapsedTime / 30)
   return 1 + (intervals * 0.1)
 }
+
