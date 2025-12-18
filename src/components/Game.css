@@ -158,6 +158,29 @@
   font-size: 2.5rem;
 }
 
+.score-popup.christmas-message {
+  color: #22c55e;
+  font-size: 2.5rem;
+  font-weight: bold;
+  animation: christmas-popup 2s ease-out forwards;
+  white-space: nowrap;
+}
+
+@keyframes christmas-popup {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-30px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-80px) scale(1.5);
+  }
+}
+
 @keyframes score-popup {
   0% {
     opacity: 1;
@@ -208,3 +231,4 @@
     font-size: 3rem;
   }
 }
+
