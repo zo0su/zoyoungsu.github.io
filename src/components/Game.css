@@ -112,6 +112,19 @@
   border-radius: 4px;
 }
 
+.obstacle-item {
+  width: 120px !important;
+  height: 120px !important;
+}
+
+.obstacle-item .item-emoji {
+  font-size: 5rem;
+}
+
+.obstacle-item .item-name {
+  font-size: 0.9rem;
+}
+
 .basket {
   position: absolute;
   bottom: 20px;
@@ -138,6 +151,11 @@
   animation: score-popup 1s ease-out forwards;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   transform: translateX(-50%);
+}
+
+.score-popup.score-negative {
+  color: #dc2626;
+  font-size: 2.5rem;
 }
 
 @keyframes score-popup {
