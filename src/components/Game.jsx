@@ -24,6 +24,21 @@ function Game({ profile, onGameEnd }) {
   const touchStartXRef = useRef(0)
   const missedItemsRef = useRef(new Set()) // 놓친 아이템 추적
 
+  // handleGameEnd를 먼저 정의 (useEffect에서 사용하기 전에)
+  const handleGameEnd = useCallback(() => {
+    setGameStarted(false)
+    setIsPaused(true)
+    // 모든 애니메이션 프레임 정리
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current)
+    }
+    onGameEnd({
+      score,
+      timeLeft,
+      lives
+    })
+  }, [score, timeLeft, lives, onGameEnd])
+
   // 게임 시작
   useEffect(() => {
     if (gameStarted && !isPaused) {
@@ -198,20 +213,6 @@ function Game({ profile, onGameEnd }) {
     setBasketPosition(Math.max(0, Math.min(100, percentage)))
   }, [gameStarted, isPaused])
 
-  const handleGameEnd = useCallback(() => {
-    setGameStarted(false)
-    setIsPaused(true)
-    // 모든 애니메이션 프레임 정리
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current)
-    }
-    onGameEnd({
-      score,
-      timeLeft,
-      lives
-    })
-  }, [score, timeLeft, lives, onGameEnd])
-
   const handleStart = () => {
     setGameStarted(true)
     setIsPaused(false)
@@ -321,4 +322,3 @@ function Game({ profile, onGameEnd }) {
 }
 
 export default Game
-
