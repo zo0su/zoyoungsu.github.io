@@ -66,3 +66,4 @@ export function getDifficultyMultiplier(elapsedTime) {
     return 1 + (intervals * 0.1)
   }
 }
+
