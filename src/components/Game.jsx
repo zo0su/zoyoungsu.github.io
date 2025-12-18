@@ -20,6 +20,7 @@ function Game({ profile, onGameEnd }) {
   const animationFrameRef = useRef(null)
   const lastSpawnTimeRef = useRef(0)
   const touchStartXRef = useRef(0)
+  const collidedItemsRef = useRef(new Set()) // 충돌한 아이템 추적
 
   // handleGameEnd를 먼저 정의 (useEffect에서 사용하기 전에)
   const handleGameEnd = useCallback(() => {
@@ -106,7 +107,16 @@ function Game({ profile, onGameEnd }) {
           height: basket.offsetHeight
         }
 
-        return prevItems
+        const newCollidedItems = new Set()
+        
+        const updatedItems = prevItems
+          .filter((item) => {
+            // 이미 충돌 처리된 아이템은 제외
+            if (collidedItemsRef.current.has(item.id)) {
+              return false
+            }
+            return true
+          })
           .map((item) => {
             // 낙하 속도 계산
             const fallSpeed = BASE_FALL_SPEED * item.speed * difficultyMultiplier
@@ -121,32 +131,42 @@ function Game({ profile, onGameEnd }) {
             }
 
             if (checkCollision(itemRect, basketRect)) {
-              // 점수 변경 (양수: 획득, 음수: 감점)
-              const newScore = item.score
-              setScore((prev) => Math.max(0, prev + newScore)) // 점수는 0 이하로 내려가지 않음
-              
-              // 점수 팝업 추가
-              setScorePopups((prev) => [
-                ...prev,
-                {
-                  id: Date.now(),
-                  x: item.x + item.width / 2,
-                  y: item.y,
-                  score: newScore
-                }
-              ])
+              // 이미 충돌 처리된 아이템인지 확인
+              if (!collidedItemsRef.current.has(item.id)) {
+                // 충돌한 아이템 추적에 추가
+                collidedItemsRef.current.add(item.id)
+                newCollidedItems.add(item.id)
+                
+                // 점수 변경 (양수: 획득, 음수: 감점)
+                const newScore = item.score
+                setScore((prev) => Math.max(0, prev + newScore)) // 점수는 0 이하로 내려가지 않음
+                
+                // 점수 팝업 추가 (한 번만)
+                setScorePopups((prev) => [
+                  ...prev,
+                  {
+                    id: Date.now() + Math.random(), // 고유 ID 생성
+                    x: item.x + item.width / 2,
+                    y: item.y,
+                    score: newScore,
+                    isChristmas: item.isChristmas || false // 크리스마스 트리 여부
+                  }
+                ])
+              }
               
               return null // 아이템 제거
             }
 
             // 화면 밖으로 나간 경우
             if (newY > gameArea.offsetHeight) {
-              return null // 아이템 제거 (목숨 시스템 제거됨)
+              return null // 아이템 제거
             }
 
             return { ...item, y: newY }
           })
           .filter((item) => item !== null)
+        
+        return updatedItems
       })
 
       if (gameStarted && !isPaused) {
@@ -209,6 +229,7 @@ function Game({ profile, onGameEnd }) {
     setBasketPosition(50)
     setScorePopups([])
     lastSpawnTimeRef.current = 0
+    collidedItemsRef.current.clear() // 충돌 추적 초기화
   }
   
   // 점수 팝업 애니메이션
@@ -280,13 +301,17 @@ function Game({ profile, onGameEnd }) {
           {scorePopups.map((popup) => (
             <div
               key={popup.id}
-              className={`score-popup ${popup.score < 0 ? 'score-negative' : ''}`}
+              className={`score-popup ${popup.score < 0 ? 'score-negative' : ''} ${popup.isChristmas ? 'christmas-message' : ''}`}
               style={{
                 left: `${popup.x}px`,
                 top: `${popup.y}px`
               }}
             >
-              {popup.score > 0 ? '+' : ''}{popup.score}
+              {popup.isChristmas ? (
+                <span>🎄 메리크리스마스! 🎄</span>
+              ) : (
+                <span>{popup.score > 0 ? '+' : ''}{popup.score}</span>
+              )}
             </div>
           ))}
           <div
@@ -303,3 +328,4 @@ function Game({ profile, onGameEnd }) {
 }
 
 export default Game
+
