@@ -8,7 +8,8 @@ export default defineConfig({
   base: '/btogame-app/',
   server: {
     port: 3000,
-    open: true
+    open: true,
+    host: true // 모바일 접속을 위해 네트워크 주소 노출
   }
 })
 
