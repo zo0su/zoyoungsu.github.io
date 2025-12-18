@@ -21,6 +21,7 @@ function Game({ profile, onGameEnd }) {
   const lastSpawnTimeRef = useRef(0)
   const touchStartXRef = useRef(0)
   const collidedItemsRef = useRef(new Set()) // 충돌한 아이템 추적
+  const backgroundMusicRef = useRef(null) // 배경 음악
 
   // handleGameEnd를 먼저 정의 (useEffect에서 사용하기 전에)
   const handleGameEnd = useCallback(() => {
@@ -29,6 +30,11 @@ function Game({ profile, onGameEnd }) {
     // 모든 애니메이션 프레임 정리
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current)
+    }
+    // 배경 음악 정지
+    if (backgroundMusicRef.current) {
+      backgroundMusicRef.current.pause()
+      backgroundMusicRef.current.currentTime = 0 // 처음으로 되돌리기
     }
     onGameEnd({
       score,
@@ -218,6 +224,31 @@ function Game({ profile, onGameEnd }) {
     const relativeX = touchX - gameAreaRect.left
     const percentage = (relativeX / gameAreaRect.width) * 100
     setBasketPosition(Math.max(0, Math.min(100, percentage)))
+  }, [gameStarted, isPaused])
+
+  // 배경 음악 초기화
+  useEffect(() => {
+    backgroundMusicRef.current = new Audio('/bgm.mp3')
+    backgroundMusicRef.current.loop = true
+    backgroundMusicRef.current.volume = 0.5 // 볼륨 50%
+    
+    return () => {
+      if (backgroundMusicRef.current) {
+        backgroundMusicRef.current.pause()
+        backgroundMusicRef.current = null
+      }
+    }
+  }, [])
+
+  // 게임 시작/종료에 따라 음악 재생/정지
+  useEffect(() => {
+    if (gameStarted && !isPaused && backgroundMusicRef.current) {
+      backgroundMusicRef.current.play().catch((error) => {
+        console.log('음악 재생 실패 (사용자 상호작용 필요):', error)
+      })
+    } else if (backgroundMusicRef.current) {
+      backgroundMusicRef.current.pause()
+    }
   }, [gameStarted, isPaused])
 
   const handleStart = () => {
