@@ -116,13 +116,16 @@ export async function getTopRankings(limitCount = 10) {
     const rankings = []
     querySnapshot.forEach((doc) => {
       const data = doc.data()
-      rankings.push({
-        id: doc.id,
-        username: data.username,
-        avatar: data.avatar,
-        score: data.bestScore || 0,
-        playCount: data.playCount || 0
-      })
+      // bestScore가 0보다 큰 사용자만 포함
+      if (data.bestScore > 0) {
+        rankings.push({
+          id: doc.id,
+          username: data.username,
+          avatar: data.avatar,
+          score: data.bestScore || 0,
+          playCount: data.playCount || 0
+        })
+      }
     })
 
     return rankings
@@ -137,7 +140,8 @@ export async function getTopRankings(limitCount = 10) {
       const rankings = []
       querySnapshot.forEach((doc) => {
         const data = doc.data()
-        if (data.bestScore !== undefined) {
+        // bestScore가 0보다 큰 사용자만 포함
+        if (data.bestScore !== undefined && data.bestScore > 0) {
           rankings.push({
             id: doc.id,
             username: data.username,
