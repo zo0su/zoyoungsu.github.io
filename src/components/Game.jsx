@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { ITEMS, getRandomItem, checkCollision, getDifficultyMultiplier } from '../utils/gameLogic'
 import './Game.css'
 
-const GAME_DURATION = 60 // 1분 = 60초
+const GAME_DURATION = 30 // 30초
 const ITEM_SPAWN_INTERVAL = 1000 // 1초마다 아이템 생성
 const BASE_FALL_SPEED = 2
 
