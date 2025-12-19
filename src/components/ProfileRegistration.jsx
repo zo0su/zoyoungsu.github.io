@@ -25,12 +25,12 @@ function ProfileRegistration({ onSubmit, onBack }) {
       <h2>프로필 등록</h2>
       <form className="profile-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>아이디</label>
+          <label>닉네임</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="아이디를 입력하세요"
+            placeholder="닉네임을 입력하세요"
             required
             maxLength={20}
           />
