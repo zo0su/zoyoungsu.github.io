@@ -228,9 +228,17 @@ function Game({ profile, onGameEnd }) {
 
   // 배경 음악 초기화
   useEffect(() => {
-    backgroundMusicRef.current = new Audio('/bgm.mp3')
+    // Vite의 base 경로를 사용하여 올바른 경로 설정
+    const bgmPath = `${import.meta.env.BASE_URL}bgm.mp3`
+    backgroundMusicRef.current = new Audio(bgmPath)
     backgroundMusicRef.current.loop = true
     backgroundMusicRef.current.volume = 0.5 // 볼륨 50%
+    
+    // 로드 오류 처리
+    backgroundMusicRef.current.addEventListener('error', (e) => {
+      console.error('BGM 로드 오류:', e)
+      console.error('시도한 경로:', bgmPath)
+    })
     
     return () => {
       if (backgroundMusicRef.current) {
