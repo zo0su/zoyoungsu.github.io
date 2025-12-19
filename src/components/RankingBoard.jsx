@@ -5,8 +5,26 @@ function RankingBoard({ onBack }) {
   const [rankings, setRankings] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const loadRankings = async () => {
+    setLoading(true)
+    try {
+      const topRankings = await getTopRankings(10)
+      setRankings(topRankings)
+    } catch (error) {
+      console.error('랭킹 로드 실패:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     loadRankings()
+    // 화면이 표시될 때마다 랭킹 다시 로드 (2초마다 갱신)
+    const interval = setInterval(() => {
+      loadRankings()
+    }, 2000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const loadRankings = async () => {
