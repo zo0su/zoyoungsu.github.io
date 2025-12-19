@@ -34,6 +34,21 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* 모바일 반응형: 제목 크기 조정 */
+@media (max-width: 768px) {
+  .start-screen h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .start-screen h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
 .start-screen p {
   font-size: 1.2rem;
   margin-bottom: 2rem;
