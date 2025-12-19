@@ -54,15 +54,15 @@ export function checkCollision(item, basket) {
   )
 }
 
-// 난이도 계산
+// 난이도 계산 (30초 기준으로 비례 조정)
 export function getDifficultyMultiplier(elapsedTime) {
-  if (elapsedTime >= 45) {
-    // 45초 이후: 더 빠르게 증가 (15초마다 15% 증가)
-    const intervals = Math.floor((elapsedTime - 45) / 15)
-    return 1.2 + (intervals * 0.15) // 45초 시점에서 이미 20% 증가
+  if (elapsedTime >= 22.5) {
+    // 22.5초 이후 (30초의 75%): 더 빠르게 증가 (7.5초마다 15% 증가)
+    const intervals = Math.floor((elapsedTime - 22.5) / 7.5)
+    return 1.2 + (intervals * 0.15) // 22.5초 시점에서 이미 20% 증가
   } else {
-    // 45초 이전: 30초마다 10% 증가
-    const intervals = Math.floor(elapsedTime / 30)
+    // 22.5초 이전: 15초마다 10% 증가 (30초의 절반)
+    const intervals = Math.floor(elapsedTime / 15)
     return 1 + (intervals * 0.1)
   }
 }
