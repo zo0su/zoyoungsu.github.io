@@ -63,3 +63,4 @@ function ProfileRegistration({ onSubmit, onBack }) {
 }
 
 export default ProfileRegistration
+
