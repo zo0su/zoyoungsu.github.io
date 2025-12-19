@@ -127,8 +127,36 @@ export async function getTopRankings(limitCount = 10) {
 
     return rankings
   } catch (error) {
-    console.error('랭킹 조회 실패:', error)
-    // bestScore 필드가 없을 수 있으므로 fallback
-    return []
+    console.error('랭킹 조회 실패 (bestScore 정렬 실패, fallback 시도):', error)
+    
+    // bestScore 필드가 없거나 인덱스가 없는 경우 fallback: 모든 사용자 가져와서 정렬
+    try {
+      const usersRef = collection(db, 'users')
+      const querySnapshot = await getDocs(usersRef)
+      
+      const rankings = []
+      querySnapshot.forEach((doc) => {
+        const data = doc.data()
+        if (data.bestScore !== undefined) {
+          rankings.push({
+            id: doc.id,
+            username: data.username,
+            avatar: data.avatar,
+            score: data.bestScore || 0,
+            playCount: data.playCount || 0
+          })
+        }
+      })
+      
+      // 점수 기준으로 정렬 (내림차순)
+      rankings.sort((a, b) => b.score - a.score)
+      
+      // 상위 limitCount개만 반환
+      return rankings.slice(0, limitCount)
+    } catch (fallbackError) {
+      console.error('랭킹 조회 fallback 실패:', fallbackError)
+      return []
+    }
   }
 }
+
