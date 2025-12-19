@@ -4,7 +4,7 @@ export const ITEMS = [
   { emoji: '🎻', name: '비올라', score: 10, speed: 1, probability: 15 },
   { emoji: '🎻', name: '첼로', score: 10, speed: 1, probability: 15 },
   { emoji: '🪈', name: '플룻', score: 10, speed: 1, probability: 12 },
-  { emoji: '🎷', name: '클라리넷', score: 10, speed: 1, probability: 12 },
+  { emoji: '🎵', name: '클라리넷', score: 10, speed: 1, probability: 12 },
   { emoji: '🥁', name: '팀파니', score: 10, speed: 1, probability: 10 },
   { emoji: '🪄', name: '지휘봉', score: 10, speed: 1, probability: 11 },
   { emoji: '🍙', name: '김밥', score: 20, speed: 1.5, probability: 10 },
